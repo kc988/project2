@@ -14,7 +14,7 @@
 <h1>Manage EOIs</h1>
 <!-- ================= DATABASE CONNECTION ================= -->
 <?php
-<?php
+
 require_once("settings.php");
 
 $conn = mysqli_connect($host, $user, $pwd, $sql_db);
@@ -23,6 +23,7 @@ if (!$conn) {
 die("Database connection failed");
 }
 ?>
+
 
 <!-- ================= FORMS ================= -->
 
@@ -72,4 +73,126 @@ die("Database connection failed");
 </form>
 
 <hr>
+
+
+<!-- ================= PHP ================= -->
+
+<?php
+
+// ================= LIST ALL =================
+if (isset($_POST["listall"])) {
+
+// Get all EOIs
+$sql = "SELECT * FROM eoi";
+$result = mysqli_query($conn, $sql);
+
+displayResults($result);
+}
+
+// ================= SEARCH EOIs =================
+if (isset($_POST["search"])) {
+
+// Sanitize input
+$jobref = mysqli_real_escape_string($conn, $_POST["jobref"]);
+
+if (!empty($jobref)) {
+
+$sql = "SELECT * FROM eoi WHERE jobref='$jobref'";
+$result = mysqli_query($conn, $sql);
+
+displayResults($result);
+
+} else {
+echo "<p>Please enter a Job Reference.</p>";
+}
+}
+
+// ================= DELETE EOIs =================
+if (isset($_POST["delete"])) {
+
+// Sanitize input
+$jobref = mysqli_real_escape_string($conn, $_POST["deletejob"]);
+
+if (!empty($jobref)) {
+
+$sql = "DELETE FROM eoi WHERE jobref='$jobref'";
+mysqli_query($conn, $sql);
+
+echo "<p>EOIs with Job Reference <b>$jobref</b> deleted.</p>";
+
+} else {
+echo "<p>Please enter a Job Reference to delete.</p>";
+}
+}
+
+// ================= UPDATE STATUS =================
+if (isset($_POST["update"])) {
+
+// Sanitize input
+$eoinumber = mysqli_real_escape_string($conn, $_POST["eoinumber"]);
+$status = mysqli_real_escape_string($conn, $_POST["status"]);
+
+$sql = "UPDATE eoi SET status='$status' WHERE EOInumber='$eoinumber'";
+mysqli_query($conn, $sql);
+
+echo "<p>EOI #$eoinumber updated to <b>$status</b>.</p>";
+}
+
+// ================= SORT EOIs =================
+if (isset($_POST["sort"])) {
+
+$sortfield = $_POST["sortfield"];
+
+// Whitelist allowed columns
+$allowed = array("firstname", "lastname", "jobref");
+
+if (in_array($sortfield, $allowed)) {
+
+$sql = "SELECT * FROM eoi ORDER BY $sortfield";
+$result = mysqli_query($conn, $sql);
+
+displayResults($result);
+
+} else {
+echo "<p>Invalid sort option.</p>";
+}
+}
+
+// ================= DISPLAY FUNCTION =================
+function displayResults($result)
+{
+if (mysqli_num_rows($result) > 0) {
+
+echo "<table border='1' cellpadding='5'>";
+echo "<tr>
+<th>EOI</th>
+<th>First Name</th>
+<th>Last Name</th>
+<th>Job Ref</th>
+<th>Status</th>
+</tr>";
+
+while ($row = mysqli_fetch_assoc($result)) {
+
+echo "<tr>";
+echo "<td>" . $row["EOInumber"] . "</td>";
+echo "<td>" . $row["firstname"] . "</td>";
+echo "<td>" . $row["lastname"] . "</td>";
+echo "<td>" . $row["jobref"] . "</td>";
+echo "<td>" . $row["status"] . "</td>";
+echo "</tr>";
+}
+
+echo "</table>";
+
+} else {
+echo "<p>No results found.</p>";
+}
+}
+
+mysqli_close($conn);
+?>
+
+</body>
+</html> 
 
