@@ -1,0 +1,133 @@
+body {
+    font-family: Arial;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+
+
+header {
+    background-color: green;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+
+nav {
+    margin-top: 10px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 10px;
+    
+}
+
+nav a:hover {
+    color: yellow;
+}
+
+header h1 {
+    color: white;
+}
+h1, h2, h3 {
+    color: darkgreen;
+}
+
+header img {
+    width: 80px;
+    height: auto;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    border-radius: 50%;
+}
+
+main {
+    width: 90%;
+    margin: auto;
+}
+
+section {
+    margin-bottom: 40px;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #999;
+    margin: 20px 0 30px;
+}
+
+.card,
+.quote-box {
+    background-color: white;
+    padding: 15px;
+    margin: 15px 0;
+    border-left: 5px solid green;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.translation {
+    font-style: italic;
+    color: #444;
+}
+
+.group-photo {
+    width: 500px;
+    max-width: 100%;
+    height: auto;
+    position: static;
+    border-radius: 10px;
+    display: block;
+    margin-top: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    margin-top: 15px;
+}
+
+table, th, td {
+    border: 1px solid #999;
+}
+
+th {
+    background-color: green;
+    color: white;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+caption {
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: darkgreen;
+}
+
+.highlight-text {
+    font-weight: bold;
+    color: darkgreen;
+}
+
+footer {
+    background-color: green;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-top: 40px;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: yellow;
+}
