@@ -1,0 +1,173 @@
+/* Author name : Ishmam Sultan */
+/* Student ID : 106390341 */
+/* last updated : 14 / 04/2026 */
+
+/* universal styles */
+
+body {
+    font-family: Arial;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+/* navigation bar styles */
+/* nav {
+    text-align: center ;
+    max-width: 50%;
+    margin: auto;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+
+nav p a{
+    text-decoration: none;
+} */
+header {
+    background-color: green;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+/* navigation menu */
+nav {
+    margin-top: 10px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 10px;
+}
+
+/* hover effect */
+nav a:hover {
+    color: yellow;
+}
+
+.logo {
+  width: 80px;
+  height: auto;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border-radius: 50%;
+}
+
+
+main {
+    width: 90%;
+    margin: auto;
+}
+
+header h1 {
+    color: white;
+}
+main h1 {
+    color: darkgreen;
+}
+
+h1, h2, h3 {color: darkgreen;}
+
+
+
+/* header section styled */
+
+
+/* header h1 {
+    color: rgb(255, 255, 255);
+} */
+
+/* as I was not sure which fonts to use, I used Gen Ai to search for ideal font-family that will look good in the form */
+/* form styles */
+form {
+    max-width: 50%;
+    margin: 20px auto;
+    color: #333;
+}
+/* feildset and legend styles */
+fieldset {
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    padding: 20px;
+    margin-bottom: 20px; /* margin between feildsets */
+}
+
+legend {
+    font-weight: bold;
+    color: #2c3e50;
+}
+/* personal information */
+.name {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 10px 0px;
+}
+
+/* gender section styles */
+.radio-group{
+    display: flex;
+    justify-content: space-around;
+}
+
+/*lebel styles */
+label {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* contact styles */
+.contacts {
+    display: flex;
+    justify-content: space-around;
+}
+
+/* address styles */
+#address1 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 15px;
+    margin: 10px 0px;
+}
+
+#address2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 15px;
+}
+/* text area styles */
+textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%; 
+    /* box-sizing: border-box; */
+}
+
+/* Button Styling */
+button{
+    padding: 10px 25px;
+    border: none;
+    border-radius: 5px;
+}
+
+#submit:hover {
+    background-color: rgb(39, 132, 253);
+    color: aliceblue;
+}
+
+#reset:hover {
+    background-color: rgb(253, 39, 39);
+    color: aliceblue;
+}
+
+
+footer {
+    background-color: green;     /* green background */
+    color: white;                /* white text */
+    text-align: center;          /* center text */
+    padding: 10px;               /* space inside footer */
+    margin-top: 20px;            /* space above footer */
+}
+
