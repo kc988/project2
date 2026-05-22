@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 22, 2026 at 02:01 PM
+-- Generation Time: May 22, 2026 at 02:14 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -20,56 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `renew_db`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `about`
---
-
-CREATE TABLE `about` (
-  `id` int(11) NOT NULL,
-  `member_name` varchar(100) NOT NULL,
-  `contribution` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `about`
---
-
-INSERT INTO `about` (`id`, `member_name`, `contribution`) VALUES
-(1, 'Moni', 'Designed and developed the About Us page, helped with overall CSS styling, and GitHub page deployment.'),
-(2, 'Maria', 'Created the Home page and contributed to layout structure, navigation design, and GitHub page deployment.'),
-(3, 'Karim', 'Developed the Jobs page and wrote job descriptions tailored to the sustainable energy industry, as well as GitHub Page deployment and is responsible for the final testing.'),
-(4, 'Ishmam', 'Built the Apply page, implemented the application form with HTML5 validation, and GitHub page deployment.');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `jobs`
---
-
-CREATE TABLE `jobs` (
-  `reference_number` varchar(20) NOT NULL,
-  `title` varchar(100) NOT NULL,
-  `salary_min` int(11) DEFAULT NULL,
-  `salary_max` int(11) DEFAULT NULL,
-  `reporting_line` varchar(100) DEFAULT NULL,
-  `description` text DEFAULT NULL,
-  `key_responsibilities` text DEFAULT NULL,
-  `essential_requirements` text DEFAULT NULL,
-  `preferable_requirements` text DEFAULT NULL,
-  `location` varchar(100) DEFAULT 'Melbourne, VIC',
-  `work_type` varchar(50) DEFAULT 'Full-time'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `jobs`
---
-
-INSERT INTO `jobs` (`reference_number`, `title`, `salary_min`, `salary_max`, `reporting_line`, `description`, `key_responsibilities`, `essential_requirements`, `preferable_requirements`, `location`, `work_type`) VALUES
-('PCJ20', 'Project Coordinator', 90000, 100000, 'Digital Manager', 'The Project Coordinator assists with planning and coordinating Projects.', 'Assist with website updates and projects.|Deploy Websites using GitHub pages.|Work with teams using Project Management tools like Jira.|Prepare reports for stakeholders.', 'Experience in project coordination.|Strong organisational skills.|Strong Team Player.', 'Experience with building websites.|Experience working in Jira such as creating Epics and User Stories.|Interest in the sustainability industry.', 'Melbourne, VIC', 'Full-time'),
-('WCC10', 'Website Content Coordinator', 78000, 80000, 'Communication Manager', 'The Website Content Coordinator is responsible for updating and maintaining website content, ensuring information is accurate, up-to-date, and easy for users to understand.', 'Maintain and update website content using HTML and CSS.|Ensure HTML and CSS lines meet standard validation.|Ensure Web Accessibility Evaluation is met.|Deploy Website in GitHub.', 'Experience in HTML and CSS.|Strong written and communication skills.|Experience in using GitHub such as performing commits, pushes, and merges.', 'Experience in the sustainability industry.|Knowledge of web accessibility principles.|Adaptability and Organization Skills.', 'Melbourne, VIC', 'Full-time');
 
 -- --------------------------------------------------------
 
@@ -95,18 +45,6 @@ INSERT INTO `users` (`user_id`, `username`, `password`) VALUES
 --
 
 --
--- Indexes for table `about`
---
-ALTER TABLE `about`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `jobs`
---
-ALTER TABLE `jobs`
-  ADD PRIMARY KEY (`reference_number`);
-
---
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -116,12 +54,6 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
-
---
--- AUTO_INCREMENT for table `about`
---
-ALTER TABLE `about`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
