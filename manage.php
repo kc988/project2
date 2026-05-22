@@ -104,42 +104,7 @@ if (isset($_SESSION['login_time']) && (time() - $_SESSION['login_time'] > 600)) 
     <p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</p>
     <a href="manage.php?logout=1">Logout</a>
 
-    <h3>Job Applications</h3>
-
-    <?php
-    $conn = @new mysqli($host, $user, $pwd, $sql_db);
-    $conn->set_charset("utf8mb4");
-    $result = $conn->query("SELECT * FROM eoi ORDER BY eoi_id DESC");
-    ?>
-
-    <?php if ($result && $result->num_rows > 0): ?>
-        <table>
-            <thead>
-                <tr>
-                    <th>EOI No.</th>
-                    <th>Job Ref</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php while ($row = $result->fetch_assoc()): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($row['eoi_id']); ?></td>
-                    <td><?php echo htmlspecialchars($row['job_ref']); ?></td>
-                    <td><?php echo htmlspecialchars($row['first_name'] . ' ' . $row['last_name']); ?></td>
-                    <td><?php echo htmlspecialchars($row['email']); ?></td>
-                    <td><?php echo htmlspecialchars($row['status']); ?></td>
-                </tr>
-            <?php endwhile; ?>
-            </tbody>
-        </table>
-    <?php else: ?>
-        <p>No applications found.</p>
-    <?php endif; ?>
-
-    <?php $conn->close(); ?>
+    
 
 <?php endif; ?>
 
