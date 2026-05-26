@@ -20,7 +20,7 @@ require_once("settings.php");
 $conn = mysqli_connect($host, $user, $pwd, $sql_db);
 
 if (!$conn) {
-die("Database connection failed");
+die("Database connection failed: " . mysqli_connect_error());
 }
 ?>
 
@@ -86,6 +86,10 @@ if (isset($_POST["listall"])) {
 $sql = "SELECT * FROM eoi";
 $result = mysqli_query($conn, $sql);
 
+if (!$result) {
+    echo "<p>Query error: " . mysqli_error($conn) . "</p>";
+}
+
 displayResults($result);
 }
 
@@ -99,6 +103,10 @@ if (!empty($jobref)) {
 
 $sql = "SELECT * FROM eoi WHERE jobref='$jobref'";
 $result = mysqli_query($conn, $sql);
+
+if (!$result) {
+    echo "<p>Query error: " . mysqli_error($conn) . "</p>";
+}
 
 displayResults($result);
 
@@ -116,14 +124,18 @@ $jobref = mysqli_real_escape_string($conn, $_POST["deletejob"]);
 if (!empty($jobref)) {
 
 $sql = "DELETE FROM eoi WHERE jobref='$jobref'";
-mysqli_query($conn, $sql);
-
-echo "<p>EOIs with Job Reference <b>$jobref</b> deleted.</p>";
+    $result = mysqli_query($conn, $sql);
+if (!$result) {
+    echo "<p>Query error: " . mysqli_error($conn) . "</p>"; 
+} else {
+    echo "<p>EOIs with Job Reference <b>$jobref</b> deleted.</p>";
+}
 
 } else {
 echo "<p>Please enter a Job Reference to delete.</p>";
+    }
 }
-}
+
 
 // ================= UPDATE STATUS =================
 if (isset($_POST["update"])) {
@@ -133,9 +145,12 @@ $eoinumber = mysqli_real_escape_string($conn, $_POST["eoinumber"]);
 $status = mysqli_real_escape_string($conn, $_POST["status"]);
 
 $sql = "UPDATE eoi SET status='$status' WHERE EOInumber='$eoinumber'";
-mysqli_query($conn, $sql);
 
-echo "<p>EOI #$eoinumber updated to <b>$status</b>.</p>";
+    $result = mysqli_query($conn, $sql);
+if (!$result) {
+    echo "<p>Query error: " . mysqli_error($conn) . "</p>";
+} else {
+    echo "<p>EOI #$eoinumber updated to <b>$status</b>.</p>";
 }
 
 // ================= SORT EOIs =================
@@ -151,6 +166,10 @@ if (in_array($sortfield, $allowed)) {
 $sql = "SELECT * FROM eoi ORDER BY $sortfield";
 $result = mysqli_query($conn, $sql);
 
+if (!$result) {
+    echo "<p>Query error: " . mysqli_error($conn) . "</p>";
+}
+
 displayResults($result);
 
 } else {
@@ -163,7 +182,7 @@ function displayResults($result)
 {
 if (mysqli_num_rows($result) > 0) {
 
-echo "<table border='1' cellpadding='5'>";
+echo "<table border='1' cellpadding='5' cellspacing='0'>"; 
 echo "<tr>
 <th>EOI</th>
 <th>First Name</th>
