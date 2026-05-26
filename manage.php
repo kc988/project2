@@ -75,11 +75,11 @@ die("Database connection failed: " . mysqli_connect_error());
 <hr>
 
 
-<!-- ================= PHP ================= -->
+<!-- PHP -->
 
 <?php
 
-// ================= LIST ALL =================
+// LIST ALL //
 if (isset($_POST["listall"])) {
 
 // Get all EOIs
@@ -93,7 +93,7 @@ if (!$result) {
 displayResults($result);
 }
 
-// ================= SEARCH EOIs =================
+//  SEARCH EOIs //
 if (isset($_POST["search"])) {
 
 // Sanitize input
@@ -115,7 +115,7 @@ echo "<p>Please enter a Job Reference.</p>";
 }
 }
 
-// ================= DELETE EOIs =================
+// DELETE EOIs //
 if (isset($_POST["delete"])) {
 
 // Sanitize input
@@ -137,7 +137,7 @@ echo "<p>Please enter a Job Reference to delete.</p>";
 }
 
 
-// ================= UPDATE STATUS =================
+// UPDATE STATUS //
 if (isset($_POST["update"])) {
 
 // Sanitize input
@@ -151,14 +151,15 @@ if (!$result) {
     echo "<p>Query error: " . mysqli_error($conn) . "</p>";
 } else {
     echo "<p>EOI #$eoinumber updated to <b>$status</b>.</p>";
+    }
 }
 
-// ================= SORT EOIs =================
+
+// sort EOIs//
 if (isset($_POST["sort"])) {
 
 $sortfield = $_POST["sortfield"];
 
-// Whitelist allowed columns
 $allowed = array("firstname", "lastname", "jobref");
 
 if (in_array($sortfield, $allowed)) {
@@ -174,10 +175,10 @@ displayResults($result);
 
 } else {
 echo "<p>Invalid sort option.</p>";
-}
+    }
 }
 
-// ================= DISPLAY FUNCTION =================
+//Reusable function to display results in a table//
 function displayResults($result)
 {
 if (mysqli_num_rows($result) > 0) {
