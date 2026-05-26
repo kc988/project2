@@ -1,0 +1,136 @@
+body {
+    font-family: Arial;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+
+/* header */
+header {
+    background-color: green;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+/* navigation menu */
+nav {
+    margin-top: 10px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 10px;
+}
+
+/* hover effect */
+nav a:hover {
+    color: yellow;
+}
+
+/* main content */
+main {
+    width: 90%;
+    margin: auto;
+}
+
+/* headings */
+h1, h2, h3 {
+    color: darkgreen;
+}
+
+
+img {
+  width: 80px;
+  height: auto;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border-radius: 50%;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* main content */
+main {
+    width: 90%;                  /* page takes 90% of screen width */
+    margin: auto;                /* centers the main content */
+}
+
+/* headings */
+h1, h2, h3 {
+    color: darkgreen;            /* sets all headings to dark green */
+}
+
+header h1 {
+    color: white;             
+}
+
+
+.job-listing {
+    background-color: white;     /* white background fo */
+    margin: 20px 0;              /* space above and below each section */
+    padding: 15px;               /* space inside the box */
+    border: 1px solid #ccc;      /* light grey border */
+}
+
+/* aside */
+aside {
+    float: right;                /* moves aside to the right side */
+    width: 25%;                  /* takes 25% of page width */
+    margin: 10px;                /* space around aside */
+    padding: 10px;               /* space inside aside */
+    border: 2px solid green;     /* green border */
+    background-color: #e8f5e9;   /* light green background */
+}
+
+/* unordered list */
+ul {
+    padding-left: 20px;          /* adds 20px space on the left */
+}
+
+/* ordered list */
+ol {
+    padding-left: 20px;          /* adds 20px space on the left */
+}
+
+/* footer */
+footer {
+    background-color: green;     /* green background */
+    color: white;                /* white text */
+    text-align: center;          /* center text */
+    padding: 10px;               /* space inside footer */
+    margin-top: 20px;            /* space above footer */
+}
+
+/* accessibility: when a link is focused with keyboard navigation */
+a:focus {
+    outline: 2px solid black;    /* adds visible outline for accessibility */
+}
+
+/* responsive design for smaller screens */
+@media (max-width: 800px) {
+
+    aside {
+        float: none;             /* removes floating on small screens */
+        width: 100%;             /* full width for better readability */
+    }
+
+    nav a {
+        display: block;          /* display vertically */
+        margin: 5px 0;           /* smaller spacing */
+    }
+}
+
+
+.job-listing p strong {
+    color: darkgreen;            /* makes Bold text dark green */
+}
