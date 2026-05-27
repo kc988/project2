@@ -18,7 +18,7 @@ include("nav.inc");
 <main>      
     <h1>Application form</h1>
 
-        <form action="process_eoi.php" method="post">
+        <form action="process_eoi.php" method="post" novalidate>
 
 <!-- personal information -->
         <fieldset >
