@@ -1,217 +1,358 @@
+<?php
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path'     => '/',
+    'httponly' => true,
+    'samesite' => 'Lax'
+]);
+session_start();
+
+require_once 'settings.php';
+
+$error = '';
+
+// Handle logout
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header('Location: manage.php');
+    exit;
+}
+
+// Handle login
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim(strip_tags($_POST['username'] ?? ''));
+    $password = $_POST['password'] ?? '';
+
+    if ($username === '' || $password === '') {
+        $error = 'Please enter both username and password.';
+    } else {
+        $conn = @new mysqli($host, $user, $pwd, $sql_db);
+        if ($conn->connect_error) {
+            $error = 'Service temporarily unavailable.';
+        } else {
+            $stmt = $conn->prepare("SELECT user_id, username, password FROM users WHERE username = ? LIMIT 1");
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $row = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+            $conn->close();
+
+            if ($row && password_verify($password, $row['password'])) {
+                session_regenerate_id(true);
+                $_SESSION['user_id']    = (int)$row['user_id'];
+                $_SESSION['username']   = $row['username'];
+                $_SESSION['login_time'] = time();
+                header('Location: manage.php');
+                exit;
+            } else {
+                $error = 'Invalid username or password.';
+            }
+        }
+    }
+}
+
+// Session timeout
+if (isset($_SESSION['login_time']) && (time() - $_SESSION['login_time'] > 600)) {
+    session_destroy();
+    header('Location: manage.php?timeout=1');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-<meta charset="UTF-8">
-<meta name="description" content="Managing EOIs">
-<meta name="keywords" content="EOIs, firstname, lastname, number, Meta, student, jobref, SQL, Database">
-<meta name="author" content="Maria Malik">
-<title>Manage EOIs</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Manager | Renew</title>
+    <link rel="stylesheet" href="styles/style.css">
 </head>
-
 <body>
 
-<h1>Manage EOIs</h1>
 
-<!-- ================= DATABASE CONNECTION ================= -->
+<main>
+
+<?php if (!isset($_SESSION['user_id'])): ?>
+    <!-- LOGIN FORM -->
+    <h2>HR Manager Login</h2>
+
+    <?php if (isset($_GET['timeout'])): ?>
+        <p class="info-message">Your session expired. Please log in again.</p>
+    <?php endif; ?>
+
+    <?php if ($error !== ''): ?>
+        <p class="error-message"><?php echo htmlspecialchars($error); ?></p>
+    <?php endif; ?>
+
+    <form method="post" action="manage.php" novalidate autocomplete="off">
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" maxlength="50">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" maxlength="100">
+        </div>
+        <button type="submit">Login</button>
+    </form>
+
+    <p><small>Default marker login: <code>admin</code> / <code>admin</code></small></p>
+
+<?php else: ?>
+    <!-- DASHBOARD -->
+    <h2>HR Manager Dashboard</h2>
+    <p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</p>
+    <a href="manage.php?logout=1">Logout</a>
+
+
+    <hr>
+
 <?php
 
-require_once("settings.php");
+$conn = new mysqli($host, $user, $pwd, $sql_db);
 
-$conn = mysqli_connect($host, $user, $pwd, $sql_db);
+if ($conn->connect_error) {
+    die("<p>Database connection failed.</p>");
+}
 
-if (!$conn) {
-die("Database connection failed: " . mysqli_connect_error());
+// DISPLAY FUNCTION
+function displayResults($result)
+{
+    if ($result && $result->num_rows > 0) {
+
+        echo "<table border='1' cellpadding='5'>";
+
+        echo "<tr>
+                <th>EOI ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Job Reference</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Status</th>
+              </tr>";
+
+        while ($row = $result->fetch_assoc()) {
+
+            echo "<tr>";
+
+            echo "<td>" . htmlspecialchars($row['eoi_id']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['first_name']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['last_name']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['job_reference']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['email']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['phone']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['status']) . "</td>";
+
+            echo "</tr>";
+        }
+
+        echo "</table>";
+
+    } else {
+        echo "<p>No results found.</p>";
+    }
 }
 ?>
 
-<!-- = FORMS = -->
+<h2>Manage EOIs</h2>
 
-<!-- LIST ALL EOIs -->
+<!-- LIST ALL -->
 <form method="post">
-<input type="submit" name="listall" value="List All EOIs">
+    <input type="submit" name="listall" value="List All EOIs">
 </form>
+
 <br>
 
-<!-- SEARCH EOIs -->
+<!-- SEARCH -->
 <form method="post">
-<input type="text" name="job_reference" placeholder="Job Reference">
-<input type="submit" name="search" value="Search EOIs">
+
+    <input type="text"
+           name="job_reference"
+           placeholder="Job Reference">
+
+    <input type="submit"
+           name="search"
+           value="Search EOIs">
+
 </form>
+
 <br>
 
-<!-- DELETE EOIs -->
+<!-- DELETE -->
 <form method="post">
-<input type="text" name="deletejob" placeholder="Job Reference to Delete">
-<input type="submit" name="delete" value="Delete EOIs">
+
+    <input type="text"
+           name="delete_job_reference"
+           placeholder="Job Reference to Delete">
+
+    <input type="submit"
+           name="delete"
+           value="Delete EOIs">
+
 </form>
+
 <br>
 
 <!-- UPDATE STATUS -->
 <form method="post">
-<input type="text" name="eoi_id" placeholder="EOI Number">
 
-<select name="status">
-<option value="New">New</option>
-<option value="Current">Current</option>
-<option value="Final">Final</option>
-</select>
+    <input type="text"
+           name="eoi_id"
+           placeholder="EOI ID">
 
-<input type="submit" name="update" value="Update Status">
+    <select name="status">
+
+        <option value="New">New</option>
+        <option value="Current">Current</option>
+        <option value="Final">Final</option>
+
+    </select>
+
+    <input type="submit"
+           name="update"
+           value="Update Status">
+
 </form>
+
 <br>
 
-<!-- SORT EOIs -->
+<!-- SORT -->
 <form method="post">
-<select name="sortfield">
-<option value="first_name">First Name</option>
-<option value="last_name">Last Name</option>
-<option value="job_reference">Job Reference</option>
-</select>
 
-<input type="submit" name="sort" value="Sort Results">
+    <select name="sortfield">
+
+        <option value="first_name">First Name</option>
+        <option value="last_name">Last Name</option>
+        <option value="job_reference">Job Reference</option>
+        <option value="eoi_id">EOI ID</option>
+
+    </select>
+
+    <input type="submit"
+           name="sort"
+           value="Sort Results">
+
 </form>
 
 <hr>
 
-<!-- PHP -->
-
 <?php
 
-// LIST ALL //
-if (isset($_POST["listall"])) {
+// LIST ALL
+if (isset($_POST['listall'])) {
 
-// Get all EOIs
-$sql = "SELECT * FROM eoi";
-$result = mysqli_query($conn, $sql);
+    $sql = "SELECT * FROM eoi";
+    $result = $conn->query($sql);
 
-if (!$result) {
-    echo "<p>Query error: " . mysqli_error($conn) . "</p>";
+    displayResults($result);
 }
 
-displayResults($result);
+// SEARCH
+if (isset($_POST['search'])) {
+
+    $job_reference = trim($_POST['job_reference']);
+
+    if ($job_reference !== '') {
+
+        $stmt = $conn->prepare("SELECT * FROM eoi WHERE job_reference = ?");
+        $stmt->bind_param("s", $job_reference);
+
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        displayResults($result);
+
+        $stmt->close();
+
+    } else {
+        echo "<p>Please enter a Job Reference.</p>";
+    }
 }
 
-// SEARCH EOIs //
-if (isset($_POST["search"])) {
+// DELETE
+if (isset($_POST['delete'])) {
 
-// Sanitize input //
-$job_reference = mysqli_real_escape_string($conn, $_POST["job_reference"]);
+    $delete_job_reference = trim($_POST['delete_job_reference']);
 
-if (!empty($job_reference)) {
+    if ($delete_job_reference !== '') {
 
-$sql = "SELECT * FROM eoi WHERE job_reference='$job_reference'";
-$result = mysqli_query($conn, $sql);
+        $stmt = $conn->prepare("DELETE FROM eoi WHERE job_reference = ?");
+        $stmt->bind_param("s", $delete_job_reference);
 
-if (!$result) {
-    echo "<p>Query error: " . mysqli_error($conn) . "</p>";
+        $stmt->execute();
+
+        echo "<p>EOIs deleted successfully.</p>";
+
+        $stmt->close();
+
+    } else {
+        echo "<p>Please enter a Job Reference to delete.</p>";
+    }
 }
 
-displayResults($result);
+// UPDATE STATUS
+if (isset($_POST['update'])) {
 
-} else {
-echo "<p>Please enter a Job Reference.</p>";
-}
-}
+    $eoi_id = trim($_POST['eoi_id']);
+    $status = $_POST['status'];
 
-// DELETE EOIs //
-if (isset($_POST["delete"])) {
+    if ($eoi_id !== '') {
 
-// Sanitize input
-$job_reference = mysqli_real_escape_string($conn, $_POST["deletejob"]);
+        $stmt = $conn->prepare("UPDATE eoi SET status = ? WHERE eoi_id = ?");
+        $stmt->bind_param("si", $status, $eoi_id);
 
-if (!empty($job_reference)) {
+        $stmt->execute();
 
-$sql = "DELETE FROM eoi WHERE job_reference='$job_reference'";
-$result = mysqli_query($conn, $sql);
+        echo "<p>Status updated successfully.</p>";
 
-if (!$result) {
-    echo "<p>Query error: " . mysqli_error($conn) . "</p>";
-} else {
-    echo "<p>EOIs with Job Reference <b>$job_reference</b> deleted.</p>";
+        $stmt->close();
+
+    } else {
+        echo "<p>Please enter an EOI ID.</p>";
+    }
 }
 
-} else {
-echo "<p>Please enter a Job Reference to delete.</p>";
-}
-}
+// SORT
+if (isset($_POST['sort'])) {
 
-// UPDATE STATUS //
-if (isset($_POST["update"])) {
+    $allowed = ['first_name', 'last_name', 'job_reference', 'eoi_id'];
 
-// Sanitize input
-$eoi_id = mysqli_real_escape_string($conn, $_POST["eoi_id"]);
-$status = mysqli_real_escape_string($conn, $_POST["status"]);
+    $sortfield = $_POST['sortfield'];
 
-$sql = "UPDATE eoi SET status='$status' WHERE eoi_id='$eoi_id'";
+    if (in_array($sortfield, $allowed)) {
 
-$result = mysqli_query($conn, $sql);
+        $sql = "SELECT * FROM eoi ORDER BY $sortfield";
 
-if (!$result) {
-    echo "<p>Query error: " . mysqli_error($conn) . "</p>";
-} else {
-    echo "<p>EOI #$eoi_id updated to <b>$status</b>.</p>";
-}
+        $result = $conn->query($sql);
+
+        displayResults($result);
+    }
 }
 
-// SORT EOIs //
-if (isset($_POST["sort"])) {
+$conn->close();
 
-$sortfield = $_POST["sortfield"];
-
-$allowed = array("first_name", "last_name", "job_reference");
-
-if (in_array($sortfield, $allowed)) {
-
-$sql = "SELECT * FROM eoi ORDER BY $sortfield";
-$result = mysqli_query($conn, $sql);
-
-if (!$result) {
-    echo "<p>Query error: " . mysqli_error($conn) . "</p>";
-}
-
-displayResults($result);
-
-} else {
-echo "<p>Invalid sort option.</p>";
-}
-}
-
-// Reusable function to display results in a table //
-function displayResults($result)
-{
-if (mysqli_num_rows($result) > 0) {
-
-echo "<table border='1' cellpadding='5' cellspacing='0'>";
-
-echo "<tr>
-<th>EOI ID</th>
-<th>First Name</th>
-<th>Last Name</th>
-<th>Job Ref</th>
-<th>Status</th>
-</tr>";
-
-while ($row = mysqli_fetch_assoc($result)) {
-
-echo "<tr>";
-echo "<td>" . $row["eoi_id"] . "</td>";
-echo "<td>" . $row["first_name"] . "</td>";
-echo "<td>" . $row["last_name"] . "</td>";
-echo "<td>" . $row["job_reference"] . "</td>";
-echo "<td>" . $row["status"] . "</td>";
-echo "</tr>";
-}
-
-echo "</table>";
-
-} else {
-echo "<p>No results found.</p>";
-}
-}
-
-mysqli_close($conn);
 ?>
+
+
+
+</main>
+
+<?php include 'footer.inc'; ?>
+
+</body>
+</html>
+
+    
+
+<?php endif; ?>
+
+</main>
+
+<?php include 'footer.inc'; ?>
+
+
+
 
 </body>
 </html>
