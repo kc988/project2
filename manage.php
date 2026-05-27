@@ -12,6 +12,7 @@
 <body>
 
 <h1>Manage EOIs</h1>
+
 <!-- ================= DATABASE CONNECTION ================= -->
 <?php
 
@@ -24,8 +25,7 @@ die("Database connection failed: " . mysqli_connect_error());
 }
 ?>
 
-
-<!-- ================= FORMS ================= -->
+<!-- = FORMS = -->
 
 <!-- LIST ALL EOIs -->
 <form method="post">
@@ -35,7 +35,7 @@ die("Database connection failed: " . mysqli_connect_error());
 
 <!-- SEARCH EOIs -->
 <form method="post">
-<input type="text" name="jobref" placeholder="Job Reference">
+<input type="text" name="job_reference" placeholder="Job Reference">
 <input type="submit" name="search" value="Search EOIs">
 </form>
 <br>
@@ -49,7 +49,7 @@ die("Database connection failed: " . mysqli_connect_error());
 
 <!-- UPDATE STATUS -->
 <form method="post">
-<input type="text" name="eoinumber" placeholder="EOI Number">
+<input type="text" name="eoi_id" placeholder="EOI Number">
 
 <select name="status">
 <option value="New">New</option>
@@ -64,16 +64,15 @@ die("Database connection failed: " . mysqli_connect_error());
 <!-- SORT EOIs -->
 <form method="post">
 <select name="sortfield">
-<option value="firstname">First Name</option>
-<option value="lastname">Last Name</option>
-<option value="jobref">Job Reference</option>
+<option value="first_name">First Name</option>
+<option value="last_name">Last Name</option>
+<option value="job_reference">Job Reference</option>
 </select>
 
 <input type="submit" name="sort" value="Sort Results">
 </form>
 
 <hr>
-
 
 <!-- PHP -->
 
@@ -93,15 +92,15 @@ if (!$result) {
 displayResults($result);
 }
 
-//  SEARCH EOIs //
+// SEARCH EOIs //
 if (isset($_POST["search"])) {
 
-// Sanitize input
-$jobref = mysqli_real_escape_string($conn, $_POST["jobref"]);
+// Sanitize input //
+$job_reference = mysqli_real_escape_string($conn, $_POST["job_reference"]);
 
-if (!empty($jobref)) {
+if (!empty($job_reference)) {
 
-$sql = "SELECT * FROM eoi WHERE jobref='$jobref'";
+$sql = "SELECT * FROM eoi WHERE job_reference='$job_reference'";
 $result = mysqli_query($conn, $sql);
 
 if (!$result) {
@@ -119,48 +118,48 @@ echo "<p>Please enter a Job Reference.</p>";
 if (isset($_POST["delete"])) {
 
 // Sanitize input
-$jobref = mysqli_real_escape_string($conn, $_POST["deletejob"]);
+$job_reference = mysqli_real_escape_string($conn, $_POST["deletejob"]);
 
-if (!empty($jobref)) {
+if (!empty($job_reference)) {
 
-$sql = "DELETE FROM eoi WHERE jobref='$jobref'";
-    $result = mysqli_query($conn, $sql);
+$sql = "DELETE FROM eoi WHERE job_reference='$job_reference'";
+$result = mysqli_query($conn, $sql);
+
 if (!$result) {
-    echo "<p>Query error: " . mysqli_error($conn) . "</p>"; 
+    echo "<p>Query error: " . mysqli_error($conn) . "</p>";
 } else {
-    echo "<p>EOIs with Job Reference <b>$jobref</b> deleted.</p>";
+    echo "<p>EOIs with Job Reference <b>$job_reference</b> deleted.</p>";
 }
 
 } else {
 echo "<p>Please enter a Job Reference to delete.</p>";
-    }
 }
-
+}
 
 // UPDATE STATUS //
 if (isset($_POST["update"])) {
 
 // Sanitize input
-$eoinumber = mysqli_real_escape_string($conn, $_POST["eoinumber"]);
+$eoi_id = mysqli_real_escape_string($conn, $_POST["eoi_id"]);
 $status = mysqli_real_escape_string($conn, $_POST["status"]);
 
-$sql = "UPDATE eoi SET status='$status' WHERE EOInumber='$eoinumber'";
+$sql = "UPDATE eoi SET status='$status' WHERE eoi_id='$eoi_id'";
 
-    $result = mysqli_query($conn, $sql);
+$result = mysqli_query($conn, $sql);
+
 if (!$result) {
     echo "<p>Query error: " . mysqli_error($conn) . "</p>";
 } else {
-    echo "<p>EOI #$eoinumber updated to <b>$status</b>.</p>";
-    }
+    echo "<p>EOI #$eoi_id updated to <b>$status</b>.</p>";
+}
 }
 
-
-// sort EOIs//
+// SORT EOIs //
 if (isset($_POST["sort"])) {
 
 $sortfield = $_POST["sortfield"];
 
-$allowed = array("firstname", "lastname", "jobref");
+$allowed = array("first_name", "last_name", "job_reference");
 
 if (in_array($sortfield, $allowed)) {
 
@@ -175,17 +174,18 @@ displayResults($result);
 
 } else {
 echo "<p>Invalid sort option.</p>";
-    }
+}
 }
 
-//Reusable function to display results in a table//
+// Reusable function to display results in a table //
 function displayResults($result)
 {
 if (mysqli_num_rows($result) > 0) {
 
-echo "<table border='1' cellpadding='5' cellspacing='0'>"; 
+echo "<table border='1' cellpadding='5' cellspacing='0'>";
+
 echo "<tr>
-<th>EOI</th>
+<th>EOI ID</th>
 <th>First Name</th>
 <th>Last Name</th>
 <th>Job Ref</th>
@@ -195,10 +195,10 @@ echo "<tr>
 while ($row = mysqli_fetch_assoc($result)) {
 
 echo "<tr>";
-echo "<td>" . $row["EOInumber"] . "</td>";
-echo "<td>" . $row["firstname"] . "</td>";
-echo "<td>" . $row["lastname"] . "</td>";
-echo "<td>" . $row["jobref"] . "</td>";
+echo "<td>" . $row["eoi_id"] . "</td>";
+echo "<td>" . $row["first_name"] . "</td>";
+echo "<td>" . $row["last_name"] . "</td>";
+echo "<td>" . $row["job_reference"] . "</td>";
 echo "<td>" . $row["status"] . "</td>";
 echo "</tr>";
 }
@@ -214,5 +214,4 @@ mysqli_close($conn);
 ?>
 
 </body>
-</html> 
-
+</html>
