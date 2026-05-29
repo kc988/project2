@@ -1,5 +1,5 @@
 <?php
-$css_file = "CSS/styles-apply.css"
+$css_file = "styles/styles-apply.css"
 ?>
 
 <?php

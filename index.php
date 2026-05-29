@@ -1,6 +1,6 @@
 <?php 
 
-$css_file = "CSS/style-index.css";
+$css_file = "styles/style-index.css";
 include("header.inc"); 
 include("nav.inc"); 
 ?>

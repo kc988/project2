@@ -47,7 +47,7 @@ if ($search_term !== '') {
     <title>Jobs | Sustainable Energy Solutions</title> 
     <meta name="description" content="Job opportunities at Sustainable Energy Solutions.">
 
-    <link rel="stylesheet" href="CSS/styles-jobs.css">
+    <link rel="stylesheet" href="styles/styles-jobs.css">
 
     <style>
         .Application-Note {

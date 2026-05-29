@@ -2,7 +2,7 @@
 
 <?php 
 
-$css_file = "CSS/styles-about.css";
+$css_file = "styles/styles-about.css";
 include("header.inc"); 
 include("nav.inc"); 
 ?>
