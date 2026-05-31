@@ -178,6 +178,25 @@ function displayResults($result)
 
 <br>
 
+<!-- SEARCH BY NAME -->
+<form method="post">
+
+    <input type="text"
+           name="first_name"
+           placeholder="First Name">
+
+    <input type="text"
+           name="last_name"
+           placeholder="Last Name">
+
+    <input type="submit"
+           name="search_name"
+           value="Search by Name">
+
+</form>
+
+<br>
+
 <!-- DELETE -->
 <form method="post">
 
@@ -224,7 +243,7 @@ function displayResults($result)
         <option value="first_name">First Name</option>
         <option value="last_name">Last Name</option>
         <option value="job_reference">Job Reference</option>
-        <option value="eoi_id">EOI ID</option>
+        
 
     </select>
 
@@ -267,6 +286,58 @@ if (isset($_POST['search'])) {
 
     } else {
         echo "<p>Please enter a Job Reference.</p>";
+    }
+}
+
+// SEARCH BY NAME
+if (isset($_POST['search_name'])) {
+
+    $first_name = trim($_POST['first_name']);
+    $last_name  = trim($_POST['last_name']);
+
+    if ($first_name !== '' && $last_name !== '') {
+
+        $stmt = $conn->prepare(
+            "SELECT * FROM eoi
+             WHERE first_name = ?
+             AND last_name = ?"
+        );
+
+        $stmt->bind_param("ss", $first_name, $last_name);
+
+    } elseif ($first_name !== '') {
+
+        $stmt = $conn->prepare(
+            "SELECT * FROM eoi
+             WHERE first_name = ?"
+        );
+
+        $stmt->bind_param("s", $first_name);
+
+    } elseif ($last_name !== '') {
+
+        $stmt = $conn->prepare(
+            "SELECT * FROM eoi
+             WHERE last_name = ?"
+        );
+
+        $stmt->bind_param("s", $last_name);
+
+    } else {
+
+        echo "<p>Please enter a first name or last name.</p>";
+        $stmt = null;
+    }
+
+    if ($stmt) {
+
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        displayResults($result);
+
+        $stmt->close();
     }
 }
 
@@ -316,7 +387,7 @@ if (isset($_POST['update'])) {
 // SORT
 if (isset($_POST['sort'])) {
 
-    $allowed = ['first_name', 'last_name', 'job_reference', 'eoi_id'];
+    $allowed = ['first_name', 'last_name', 'job_reference'];
 
     $sortfield = $_POST['sortfield'];
 
